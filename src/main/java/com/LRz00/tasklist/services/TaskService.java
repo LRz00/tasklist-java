@@ -7,6 +7,7 @@ package com.LRz00.tasklist.services;
 import com.LRz00.tasklist.models.Task;
 import com.LRz00.tasklist.models.User;
 import com.LRz00.tasklist.repositories.TaskRepository;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,5 +55,14 @@ public class TaskService {
             throw new RuntimeException("Não é possivel deletar");
         }
         
+    }
+    
+    public List<Task> findAllByUser(Long id){
+         try{
+            this.userService.findById(id);
+        }catch(Exception e){
+            throw new RuntimeException("Não foi possivel realizar ação");
+        }
+         return this.taskRepo.findByUser_Id(id);
     }
 }

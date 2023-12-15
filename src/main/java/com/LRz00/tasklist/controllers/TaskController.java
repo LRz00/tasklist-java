@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.LRz00.tasklist.services.TaskService;
 import java.net.URI;
+import java.util.List;
 import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,7 +27,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
  * @author lara
  */
 @RestController
-@RequestMapping("/task/")
+@RequestMapping("/task")
 @Validated
 public class TaskController {
     @Autowired
@@ -36,6 +37,12 @@ public class TaskController {
     public ResponseEntity<Task> findById(@PathVariable Long id){
         Task task = this.taskService.findById(id);
         return ResponseEntity.ok().body(task);
+    }
+    
+    @GetMapping("/user")
+    public ResponseEntity<List<Task>> findAllByUser(@PathVariable Long id) {
+        List<Task> tasks = this.taskService.findAllByUser(id);
+        return ResponseEntity.ok().body(tasks);
     }
     
     @PostMapping
