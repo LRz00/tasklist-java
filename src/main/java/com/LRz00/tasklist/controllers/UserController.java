@@ -29,7 +29,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
  * @author lara
  */
 @RestController
-@RequestMapping("/user/")
+@RequestMapping("/user")
 @Validated
 public class UserController {
     @Autowired
