@@ -17,6 +17,7 @@ import javax.validation.constraints.NotNull;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import javax.persistence.Column;
 
 /**
  *
@@ -34,14 +35,17 @@ public class User {
     }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", unique = true)
     private Long id;
 
     @NotNull(groups = CreateUser.class)
     @NotEmpty(groups = CreateUser.class)
+    @Column(name = "username", unique = true)
     private String username;
 
     @NotNull(groups = {CreateUser.class, UpdateUser.class})
     @NotEmpty(groups = {CreateUser.class, UpdateUser.class})
+    @Column(name = "password")
     private String password;
     
     @OneToMany(mappedBy = "user")
