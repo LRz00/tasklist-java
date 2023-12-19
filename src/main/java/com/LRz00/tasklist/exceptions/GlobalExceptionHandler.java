@@ -11,7 +11,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
-
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -50,4 +49,43 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
          
         return ResponseEntity.unprocessableEntity().body(errorResponse);
     }
+    
+     
+      
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<Object> handleAllUncaughtException(Exception exception, WebRequest request){
+        final String errorMessage = "Unknown error occured";
+        log.error(errorMessage, exception);
+        return buildErrorResponse(exception, errorMessage, HttpStatus.INTERNAL_SERVER_ERROR, request);
+    }
+    
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException dataIntegrityViolationException, WebRequest request){
+        String errorMessage = dataIntegrityViolationException.getMostSpecificCause().getMessage();
+        log.error("Faile to save entity with integrity problems: " + errorMessage, dataIntegrityViolationException);
+        return buildErrorResponse(dataIntegrityViolationException, errorMessage, HttpStatus.CONFLICT, request);
+    }
+    
+    
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException constraintViolationException, WebRequest request){
+        log.error("Failer to validate element", constraintViolationException);
+        return buildErrorResponse(constraintViolationException, HttpStatus.UNPROCESSABLE_ENTITY, request);
+    }
+    
+     private ResponseEntity<Object> buildErrorResponse(Exception exception, HttpStatus httpStatus, WebRequest request){
+        return buildErrorResponse(exception, exception.getMessage(), httpStatus, request);
+    }
+     
+     private ResponseEntity<Object> buildErrorResponse(Exception exception, String message, HttpStatus httpStatus, WebRequest request){
+        ErrorResponse errorResponse = new ErrorResponse(httpStatus.value(), message);
+        
+        if(this.printStackTrace){
+            errorResponse.setStackTrace(ExceptionUtils.getStackTrace(exception));
+        }
+        return ResponseEntity.status(httpStatus).body(errorResponse);
+     }
 }
