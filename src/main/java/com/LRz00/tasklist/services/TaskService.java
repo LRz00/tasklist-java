@@ -7,6 +7,7 @@ package com.LRz00.tasklist.services;
 import com.LRz00.tasklist.models.Task;
 import com.LRz00.tasklist.models.User;
 import com.LRz00.tasklist.repositories.TaskRepository;
+import com.LRz00.tasklist.services.exceptions.DataBindingException;
 import com.LRz00.tasklist.services.exceptions.ObjectNotFoundException;
 import java.util.List;
 import java.util.Optional;
@@ -53,7 +54,7 @@ public class TaskService {
         try{
             this.taskRepo.deleteById(id);
         }catch(Exception e){
-            throw new RuntimeException("Não é possivel deletar");
+            throw new DataBindingException("Não é possivel deletar");
         }
         
     }

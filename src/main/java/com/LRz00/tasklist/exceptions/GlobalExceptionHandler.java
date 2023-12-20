@@ -4,6 +4,7 @@
  */
 package com.LRz00.tasklist.exceptions;
 
+import com.LRz00.tasklist.services.exceptions.DataBindingException;
 import com.LRz00.tasklist.services.exceptions.ObjectNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
@@ -82,6 +83,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleObjectNotFoundException(ObjectNotFoundException objectNotFoundException, WebRequest request){
         log.error("Failed to find the requested object", objectNotFoundException);
         return buildErrorResponse(objectNotFoundException, HttpStatus.NOT_FOUND, request);
+    }
+    @ExceptionHandler(DataBindingException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<Object> handleDataBindingException(DataBindingException dataBindingException, WebRequest request){
+        log.error("Failed to handle entity with associated data", dataBindingException);
+        return buildErrorResponse(dataBindingException,HttpStatus.CONFLICT, request);
     }
     
      private ResponseEntity<Object> buildErrorResponse(Exception exception, HttpStatus httpStatus, WebRequest request){

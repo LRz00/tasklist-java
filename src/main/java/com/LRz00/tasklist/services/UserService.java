@@ -9,6 +9,7 @@ import com.LRz00.tasklist.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.LRz00.tasklist.models.User;
+import com.LRz00.tasklist.services.exceptions.DataBindingException;
 import com.LRz00.tasklist.services.exceptions.ObjectNotFoundException;
 import java.util.Optional;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,7 +44,7 @@ public class UserService {
         try{
             this.userRepo.deleteById(id);
         } catch(Exception e){
-            throw new RuntimeException("Não é possivel excluir pois há tarefas relacionadas.");
+            throw new DataBindingException("Não é possivel excluir pois há tarefas relacionadas.");
         }
     }
 }
