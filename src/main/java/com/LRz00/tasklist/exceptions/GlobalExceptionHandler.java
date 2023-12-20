@@ -4,6 +4,7 @@
  */
 package com.LRz00.tasklist.exceptions;
 
+import com.LRz00.tasklist.services.exceptions.ObjectNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 
@@ -74,6 +75,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException constraintViolationException, WebRequest request){
         log.error("Failer to validate element", constraintViolationException);
         return buildErrorResponse(constraintViolationException, HttpStatus.UNPROCESSABLE_ENTITY, request);
+    }
+    
+    @ExceptionHandler(ObjectNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<Object> handleObjectNotFoundException(ObjectNotFoundException objectNotFoundException, WebRequest request){
+        log.error("Failed to find the requested object", objectNotFoundException);
+        return buildErrorResponse(objectNotFoundException, HttpStatus.NOT_FOUND, request);
     }
     
      private ResponseEntity<Object> buildErrorResponse(Exception exception, HttpStatus httpStatus, WebRequest request){

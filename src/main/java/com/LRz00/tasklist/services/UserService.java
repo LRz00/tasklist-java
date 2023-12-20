@@ -9,6 +9,7 @@ import com.LRz00.tasklist.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.LRz00.tasklist.models.User;
+import com.LRz00.tasklist.services.exceptions.ObjectNotFoundException;
 import java.util.Optional;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +20,7 @@ public class UserService {
     
     public User findById(Long id){
         Optional<User> user = this.userRepo.findById(id);
-        return user.orElseThrow(() -> new RuntimeException("USUARIO NÂO ENCONTRADO"));
+        return user.orElseThrow(() -> new ObjectNotFoundException("USUARIO NÂO ENCONTRADO"));
     }
     
     @Transactional

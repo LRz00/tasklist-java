@@ -7,6 +7,7 @@ package com.LRz00.tasklist.services;
 import com.LRz00.tasklist.models.Task;
 import com.LRz00.tasklist.models.User;
 import com.LRz00.tasklist.repositories.TaskRepository;
+import com.LRz00.tasklist.services.exceptions.ObjectNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class TaskService {
     public Task findById(Long id){
         Optional<Task> task = this.taskRepo.findById(id);
         
-        return task.orElseThrow(() -> new RuntimeException("Tarefa não encontrada"));
+        return task.orElseThrow(() -> new ObjectNotFoundException("Tarefa não encontrada"));
     }
     @Transactional
     public Task create(Task task){
