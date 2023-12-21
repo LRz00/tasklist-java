@@ -9,9 +9,13 @@ import com.LRz00.tasklist.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.LRz00.tasklist.models.User;
+import com.LRz00.tasklist.models.enums.ProfileEnum;
 import com.LRz00.tasklist.services.exceptions.DataBindingException;
 import com.LRz00.tasklist.services.exceptions.ObjectNotFoundException;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -19,23 +23,29 @@ public class UserService {
     @Autowired
     private UserRepository userRepo;
     
+    @Autowired BCryptPasswordEncoder passwordEncoder;
+    
     public User findById(Long id){
         Optional<User> user = this.userRepo.findById(id);
         return user.orElseThrow(() -> new ObjectNotFoundException("USUARIO NÂO ENCONTRADO"));
     }
     
     @Transactional
-    public User create(User usuario){
-        usuario.setId(null);
-        usuario = this.userRepo.save(usuario);
+    public User create(User user){
+        user.setId(null);
+        user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+        user.setProfiles(Stream.of(ProfileEnum.USER.getCode()).collect(Collectors.toSet()));
         
-        return usuario;     
+        user = this.userRepo.save(user);
+        
+        return user;     
     }
     
     @Transactional
     public User update(User usuario){
         User newUser = findById(usuario.getId());
         newUser.setPassword(usuario.getPassword());
+        newUser.setPassword(this.passwordEncoder.encode(usuario.getPassword()));
         return this.userRepo.save(newUser);
     }
     
