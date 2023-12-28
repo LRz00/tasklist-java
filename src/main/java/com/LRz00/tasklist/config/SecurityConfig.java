@@ -4,6 +4,7 @@
  */
 package com.LRz00.tasklist.config;
 
+import com.LRz00.tasklist.security.JWTAuthenticationFilter;
 import com.LRz00.tasklist.security.JWTUtil;
 import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,8 +62,11 @@ public class SecurityConfig {
         this.authenticationManager = authenticationManagerBuilder.build();
         
         http.authorizeRequests().antMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST)
-                .permitAll().antMatchers(PUBLIC_MATCHERS).permitAll().anyRequest().authenticated();
-
+                .permitAll().antMatchers(PUBLIC_MATCHERS).permitAll().anyRequest().authenticated().
+                and().authenticationManager(authenticationManager);
+        
+        http.addFilter(new JWTAuthenticationFilter(this.authenticationManager, this.jwtUtil));
+        
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         return http.build();
     }
