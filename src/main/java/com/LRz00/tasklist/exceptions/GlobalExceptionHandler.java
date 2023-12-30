@@ -4,6 +4,7 @@
  */
 package com.LRz00.tasklist.exceptions;
 
+import com.LRz00.tasklist.services.exceptions.AuthorizationException;
 import com.LRz00.tasklist.services.exceptions.DataBindingException;
 import com.LRz00.tasklist.services.exceptions.ObjectNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.validation.FieldError;
@@ -91,6 +93,27 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler imple
     public ResponseEntity<Object> handleDataBindingException(DataBindingException dataBindingException, WebRequest request){
         log.error("Failed to handle entity with associated data", dataBindingException);
         return buildErrorResponse(dataBindingException,HttpStatus.CONFLICT, request);
+    }
+    
+    @ExceptionHandler(AuthorizationException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ResponseEntity<Object> handleAuthorizationException(AuthorizationException authorizationException,WebRequest request){
+        log.error("Authorization error ", authorizationException);
+        return buildErrorResponse(authorizationException,HttpStatus.FORBIDDEN, request);
+    }
+    
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException accessDeniedException, WebRequest request) {
+        log.error("Authorization error ", accessDeniedException);
+        return buildErrorResponse(accessDeniedException,HttpStatus.FORBIDDEN, request);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<Object> handleAuthenticationException(AuthenticationException authenticationException, WebRequest request) {
+        log.error("Authentication error ", authenticationException);
+        return buildErrorResponse(authenticationException,HttpStatus.UNAUTHORIZED, request);
     }
     
      private ResponseEntity<Object> buildErrorResponse(Exception exception, HttpStatus httpStatus, WebRequest request){
