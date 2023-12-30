@@ -10,11 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.LRz00.tasklist.models.User;
 import com.LRz00.tasklist.models.enums.ProfileEnum;
+import com.LRz00.tasklist.security.UserSpringSecurity;
+import com.LRz00.tasklist.services.exceptions.AuthorizationException;
 import com.LRz00.tasklist.services.exceptions.DataBindingException;
 import com.LRz00.tasklist.services.exceptions.ObjectNotFoundException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +30,12 @@ public class UserService {
     @Autowired BCryptPasswordEncoder passwordEncoder;
     
     public User findById(Long id){
+        UserSpringSecurity userSpringSecurity = authenticated();
+        if (!Objects.nonNull(userSpringSecurity)
+                || !userSpringSecurity.hasRole(ProfileEnum.ADMIN) && !id.equals(userSpringSecurity.getId())){
+            throw new AuthorizationException("Acesso negado!");
+        }
+        
         Optional<User> user = this.userRepo.findById(id);
         return user.orElseThrow(() -> new ObjectNotFoundException("USUARIO NÂO ENCONTRADO"));
     }
@@ -55,6 +65,14 @@ public class UserService {
             this.userRepo.deleteById(id);
         } catch(Exception e){
             throw new DataBindingException("Não é possivel excluir pois há tarefas relacionadas.");
+        }
+    }
+    
+    public static UserSpringSecurity authenticated(){
+        try{
+            return (UserSpringSecurity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        }catch(Exception e){
+            return null;
         }
     }
 }
