@@ -47,16 +47,14 @@ public class JWTUtil {
         return null;
     }
     
-    public boolean isValidTOken(String token){
+    public boolean isValidToken(String token){
         Claims claims = getClaims(token);
-        
-        if(Objects.nonNull(claims)){
+        if (Objects.nonNull(claims)) {
             String username = claims.getSubject();
             Date expirationDate = claims.getExpiration();
             Date now = new Date(System.currentTimeMillis());
-            if(Objects.nonNull(username) && Objects.nonNull(expirationDate) && now.before(expirationDate)){
+            if (Objects.nonNull(username) && Objects.nonNull(expirationDate) && now.before(expirationDate))
                 return true;
-            }
         }
         return false;
       

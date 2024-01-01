@@ -3,7 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.LRz00.tasklist.services;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.LRz00.tasklist.repositories.TaskRepository;
 import com.LRz00.tasklist.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,14 +31,19 @@ public class UserService {
     @Autowired BCryptPasswordEncoder passwordEncoder;
     
     public User findById(Long id){
-        UserSpringSecurity userSpringSecurity = authenticated();
-        if (!Objects.nonNull(userSpringSecurity)
-                || !userSpringSecurity.hasRole(ProfileEnum.ADMIN) && !id.equals(userSpringSecurity.getId())){
-            throw new AuthorizationException("Acesso negado!");
-        }
-        
+       UserSpringSecurity userSpringSecurity = authenticated();
+    
+    if (!Objects.nonNull(userSpringSecurity)) {
+        throw new AuthorizationException("Acesso negado! Usuario Nulo");
+    }
+
+    // Se o usuário autenticado é um administrador, ou se é o próprio usuário buscando suas informações
+    if (userSpringSecurity.hasRole(ProfileEnum.ADMIN) || id.equals(userSpringSecurity.getId())) {
         Optional<User> user = this.userRepo.findById(id);
-        return user.orElseThrow(() -> new ObjectNotFoundException("USUARIO NÂO ENCONTRADO"));
+        return user.orElseThrow(() -> new ObjectNotFoundException("USUARIO NÃO ENCONTRADO"));
+    } else {
+        throw new AuthorizationException("Acesso negado!");
+    }
     }
     
     @Transactional
@@ -70,8 +76,11 @@ public class UserService {
     
     public static UserSpringSecurity authenticated(){
         try{
-            return (UserSpringSecurity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            UserSpringSecurity user = (UserSpringSecurity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            System.out.print("Usuario autenticado: {}" + user.getUsername());
+            return user;
         }catch(Exception e){
+            System.out.print("Erro ao obter usuario autenticado");
             return null;
         }
     }
