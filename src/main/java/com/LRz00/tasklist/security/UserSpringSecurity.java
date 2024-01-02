@@ -5,14 +5,16 @@
 package com.LRz00.tasklist.security;
 
 import com.LRz00.tasklist.models.enums.ProfileEnum;
+
 import java.util.Collection;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  *

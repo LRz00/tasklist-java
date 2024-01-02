@@ -3,24 +3,26 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.LRz00.tasklist.services;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import com.LRz00.tasklist.repositories.TaskRepository;
+
 import com.LRz00.tasklist.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import com.LRz00.tasklist.models.User;
 import com.LRz00.tasklist.models.enums.ProfileEnum;
 import com.LRz00.tasklist.security.UserSpringSecurity;
 import com.LRz00.tasklist.services.exceptions.AuthorizationException;
 import com.LRz00.tasklist.services.exceptions.DataBindingException;
 import com.LRz00.tasklist.services.exceptions.ObjectNotFoundException;
+
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -75,12 +77,9 @@ public class UserService {
     }
     
     public static UserSpringSecurity authenticated(){
-        try{
-            UserSpringSecurity user = (UserSpringSecurity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            System.out.print("Usuario autenticado: {}" + user.getUsername());
-            return user;
-        }catch(Exception e){
-            System.out.print("Erro ao obter usuario autenticado");
+        try {
+            return (UserSpringSecurity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        } catch (Exception e) {
             return null;
         }
     }
