@@ -6,6 +6,8 @@ package com.LRz00.tasklist.services;
 
 import com.LRz00.tasklist.repositories.UserRepository;
 import com.LRz00.tasklist.models.User;
+import com.LRz00.tasklist.models.dto.UserCreateDTO;
+import com.LRz00.tasklist.models.dto.UserUpdateDTO;
 import com.LRz00.tasklist.models.enums.ProfileEnum;
 import com.LRz00.tasklist.security.UserSpringSecurity;
 import com.LRz00.tasklist.services.exceptions.AuthorizationException;
@@ -82,5 +84,20 @@ public class UserService {
         } catch (Exception e) {
             return null;
         }
+    }
+    
+    public User fromDTO(@Valid UserCreateDTO user){
+        User newUser = new User();
+        newUser.setUsername(user.getUsername());
+        newUser.setPassword(user.getPassword());
+        
+        return newUser;
+    }
+    
+     public User fromDTO(@Valid UserUpdateDTO user) {
+        User newUser = new User();
+        newUser.setId(user.getId());
+        newUser.setPassword(user.getPassword());
+        return newUser;
     }
 }

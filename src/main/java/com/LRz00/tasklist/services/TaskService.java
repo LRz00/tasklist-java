@@ -7,6 +7,7 @@ package com.LRz00.tasklist.services;
 import com.LRz00.tasklist.models.Task;
 import com.LRz00.tasklist.models.User;
 import com.LRz00.tasklist.models.enums.ProfileEnum;
+import com.LRz00.tasklist.models.projection.TaskProjection;
 import com.LRz00.tasklist.repositories.TaskRepository;
 import com.LRz00.tasklist.security.UserSpringSecurity;
 import com.LRz00.tasklist.services.exceptions.AuthorizationException;
@@ -74,14 +75,14 @@ public class TaskService {
         
     }
     
-    public List<Task> findAllByUser(){
+    public List<TaskProjection> findAllByUser(){
          UserSpringSecurity userSpringSecurity = UserService.authenticated();
          
          if(Objects.isNull(userSpringSecurity)){
              throw new AuthorizationException("Acesso negado!");
          }
          
-         List<Task> tasks = this.taskRepo.findByUser_Id(userSpringSecurity.getId());
+         List<TaskProjection> tasks = this.taskRepo.findByUser_Id(userSpringSecurity.getId());
          return tasks;
          
     }

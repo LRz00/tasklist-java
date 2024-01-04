@@ -5,6 +5,7 @@
 package com.LRz00.tasklist.controllers;
 
 import com.LRz00.tasklist.models.Task;
+import com.LRz00.tasklist.models.projection.TaskProjection;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,8 +41,8 @@ public class TaskController {
     }
     
     @GetMapping("/user/{id}")
-    public ResponseEntity<List<Task>> findAllByUser() {
-    List<Task> tasks = this.taskService.findAllByUser();
+    public ResponseEntity<List<TaskProjection>> findAllByUser() {
+    List<TaskProjection> tasks = this.taskService.findAllByUser();
     return ResponseEntity.ok().body(tasks);
 }
     

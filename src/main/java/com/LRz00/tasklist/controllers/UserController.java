@@ -6,8 +6,8 @@ package com.LRz00.tasklist.controllers;
 
 
 import com.LRz00.tasklist.models.User;
-import com.LRz00.tasklist.models.User.CreateUser;
-import com.LRz00.tasklist.models.User.UpdateUser;
+import com.LRz00.tasklist.models.dto.UserCreateDTO;
+import com.LRz00.tasklist.models.dto.UserUpdateDTO;
 import com.LRz00.tasklist.services.UserService;
 import java.net.URI;
 import javax.validation.Valid;
@@ -42,18 +42,18 @@ public class UserController {
     }
     
     @PostMapping
-    public ResponseEntity<Void> create(@Valid @RequestBody User user) {
+    public ResponseEntity<Void> create(@Valid @RequestBody UserCreateDTO obj) {
+        User user = this.userService.fromDTO(obj);
         User newUser = this.userService.create(user);
-        
-         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}").buildAndExpand(newUser.getId()).toUri();
         return ResponseEntity.created(uri).build();
     }
     
     @PutMapping("/{id}")
-    @Validated(UpdateUser.class)
-    public ResponseEntity<Void> update(@Valid @RequestBody User user, @PathVariable Long id){
-        user.setId(id);
+    public ResponseEntity<Void> update(@Valid @RequestBody UserUpdateDTO obj, @PathVariable Long id) {
+        obj.setId(id);
+        User user = this.userService.fromDTO(obj);
         this.userService.update(user);
         return ResponseEntity.noContent().build();
     }

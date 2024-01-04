@@ -5,6 +5,7 @@
 package com.LRz00.tasklist.repositories;
 
 import com.LRz00.tasklist.models.Task;
+import com.LRz00.tasklist.models.projection.TaskProjection;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long>{
-    List<Task> findByUser_Id(Long id);    
+    List<TaskProjection> findByUser_Id(Long id);    
     
     //@Query(value = " SELECT t FROM Task t where t.user.id = :id")
     //List<Task> findByUserId(@Param("id") Long id); 
