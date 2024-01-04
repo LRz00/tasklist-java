@@ -25,6 +25,9 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.FetchType;
+import javax.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 /**
  *
@@ -33,25 +36,19 @@ import javax.persistence.FetchType;
 @Entity
 @Table(name = "user")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
-
-    public interface CreateUser {
-    }
-
-    public interface UpdateUser {
-    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true)
     private Long id;
 
-    @NotNull(groups = CreateUser.class)
-    @NotEmpty(groups = CreateUser.class)
+    @NotBlank
     @Column(name = "username", unique = true)
     private String username;
 
-    @NotNull(groups = {CreateUser.class, UpdateUser.class})
-    @NotEmpty(groups = {CreateUser.class, UpdateUser.class})
+    @NotBlank
     @Column(name = "password")
     private String password;
     
